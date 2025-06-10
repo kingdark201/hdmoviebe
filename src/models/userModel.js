@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    name: {type: String,required: true},
+    username: {type: String,required: true},
     avatar: {type: String,required: false, default: 'https://tte.edu.vn/public/upload/2025/01/avatar-dep44.webp' },
     password: {type: String,required: true},
 }, { timestamps: true });

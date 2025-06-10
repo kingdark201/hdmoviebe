@@ -18,9 +18,9 @@ class UserController {
 
     async addUser(req, res) {
         try {
-            const { name, password, avatar } = req.body;
+            const { username, password, avatar } = req.body;
             const hashedPassword = await bcrypt.hash(password, 10);
-            const user = new User({ name, password: hashedPassword, avatar });
+            const user = new User({ username, password: hashedPassword, avatar });
             await user.save();
             res.status(201).json(user);
         } catch (error) {
@@ -33,8 +33,8 @@ class UserController {
             const userId = req.user.id;
             const updateData = {};
 
-            if (Object.prototype.hasOwnProperty.call(req.body, 'name')) {
-                updateData.name = req.body.name;
+            if (Object.prototype.hasOwnProperty.call(req.body, 'username')) {
+                updateData.username = req.body.username;
             }
             if (Object.prototype.hasOwnProperty.call(req.body, 'avatar')) {
                 updateData.avatar = req.body.avatar;
@@ -71,17 +71,17 @@ class UserController {
 
     async login(req, res) {
         try {
-            const { name, password } = req.body;
-            const user = await User.findOne({ name });
+            const { username, password } = req.body;
+            const user = await User.findOne({ username });
             if (!user) return res.status(400).json({ message: 'Invalid credentials' });
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
-            const token = jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET || 'secretkey', { expiresIn: '1d' });
+            const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET || 'secretkey', { expiresIn: '1d' });
             res.json({
                 token,
                 user: {
                     id: user._id,
-                    name: user.name
+                    username: user.username
                 }
             });
         } catch (error) {
