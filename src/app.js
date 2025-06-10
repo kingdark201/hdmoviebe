@@ -4,11 +4,13 @@ const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const cors = require('cors'); // Thêm dòng này
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+app.use(cors()); // Thêm dòng này
 app.use(express.json());
 
 // Database connection
