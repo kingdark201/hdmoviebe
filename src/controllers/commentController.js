@@ -42,8 +42,6 @@ class CommentController {
             const comments = await Comment.find({ slug_film: slug })
                 .populate({ path: 'user_id', select: 'name avatar' })
                 .lean();
-            // Thêm log để kiểm tra dữ liệu trả về
-            console.log('Populated comments:', comments);
 
             const formatted = comments.map(c => {
                 let userId = null, name = null, avatar = null;
