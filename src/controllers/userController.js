@@ -19,6 +19,10 @@ class UserController {
     async addUser(req, res) {
         try {
             const { username, password, avatar } = req.body;
+            const existingUser = await User.findOne({ username });
+            if (existingUser) {
+                return res.status(400).json({ message: 'Username already exists' });
+            }
             const hashedPassword = await bcrypt.hash(password, 10);
             const user = new User({ username, password: hashedPassword, avatar });
             await user.save();
