@@ -40,21 +40,21 @@ class CommentController {
         try {
             const { slug } = req.params;
             const comments = await Comment.find({ slug_film: slug })
-                .populate({ path: 'user_id', select: 'name avatar' })
+                .populate({ path: 'user_id', select: 'username avatar' })
                 .lean();
 
             const formatted = comments.map(c => {
-                let userId = null, name = null, avatar = null;
+                let userId = null, username = null, avatar = null;
                 if (c.user_id && typeof c.user_id === 'object' && c.user_id._id) {
                     userId = c.user_id._id;
-                    name = c.user_id.name;
+                    username = c.user_id.userusername;
                     avatar = c.user_id.avatar;
                 } else if (typeof c.user_id === 'string' || typeof c.user_id === 'object') {
                     userId = c.user_id;
                 }
                 return {
                     user_id: userId,
-                    name,
+                    username,
                     avatar,
                     comment: c.comment,
                     slug_film: c.slug_film,
