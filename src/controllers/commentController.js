@@ -16,7 +16,7 @@ class CommentController {
             await newComment.save();
             res.status(201).json(newComment);
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.status(400).json({ status: 400, message: error.message });
         }
     }
 
@@ -25,14 +25,14 @@ class CommentController {
             const user_id = req.user.id;
             const commentId = req.params.id;
             const comment = await Comment.findById(commentId);
-            if (!comment) return res.status(404).json({ message: 'Comment not found' });
+            if (!comment) return res.status(404).json({ status: 404, message: 'Comment not found' });
             if (comment.user_id.toString() !== user_id) {
-                return res.status(403).json({ message: 'Not authorized to delete this comment' });
+                return res.status(403).json({ status: 403, message: 'Not authorized to delete this comment' });
             }
             await Comment.findByIdAndDelete(commentId);
             res.json({ message: 'Comment deleted' });
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.status(400).json({ status: 400, message: error.message });
         }
     }
 
@@ -66,7 +66,7 @@ class CommentController {
             });
             res.json(formatted);
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.status(400).json({ status: 400, message: error.message });
         }
     }
 }
