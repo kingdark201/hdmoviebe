@@ -31,8 +31,9 @@ class FilmHistoryController {
         try {
             const user_id = req.user && req.user.id ? req.user.id : null;
             if (!user_id) return res.status(401).json({ status: 401, message: 'User not authenticated' });
-            const { id } = req.params;
-            const history = await FilmHistory.findOneAndDelete({ _id: id, user_id });
+            const { slug } = req.params; // hoặc req.body.slug nếu truyền qua body
+            if (!slug) return res.status(400).json({ status: 400, message: 'Missing slug parameter' });
+            const history = await FilmHistory.findOneAndDelete({ user_id, slug });
             if (!history) return res.status(404).json({ status: 404, message: 'History not found' });
             res.json({ status: 200, message: 'History deleted' });
         } catch (error) {
