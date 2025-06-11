@@ -9,6 +9,7 @@ const filmHistorySchema = new mongoose.Schema({
     server: { type: String, required: true },
     progress: { type: Number, required: true },
     slug: { type: String, required: true },
+    embeb: { type: String, required: true}
 }, { timestamps: true });
 
 const FilmHistory = mongoose.model('FilmHistory', filmHistorySchema);

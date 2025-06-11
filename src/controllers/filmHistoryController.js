@@ -5,8 +5,8 @@ class FilmHistoryController {
         try {
             const user_id = req.user && req.user.id ? req.user.id : null;
             if (!user_id) return res.status(401).json({ status: 401, message: 'User not authenticated' });
-            const { title, thumb, episode, total_episodes, server, progress, slug } = req.body;
-            if (!title || !thumb || episode == null || total_episodes == null || !server || progress == null || !slug) {
+            const { title, thumb, episode, total_episodes, server, progress, slug, embeb } = req.body;
+            if (!title || !thumb || episode == null || total_episodes == null || !server || progress == null || !slug || !embeb) {
                 return res.status(400).json({ status: 400, message: 'Missing required fields' });
             }
             // Kiểm tra tồn tại theo user_id + slug
@@ -15,11 +15,12 @@ class FilmHistoryController {
                 // Chỉ update các trường episode và progress, trường khác giữ nguyên
                 history.episode = episode;
                 history.progress = progress;
+                history.embeb = embeb; // Cập nhật trường embeb nếu có
                 await history.save();
                 return res.json({ status: 200, data: history, message: 'History updated' });
             }
             // Nếu chưa có thì tạo mới
-            history = new FilmHistory({ user_id, title, thumb, episode, total_episodes, server, progress, slug });
+            history = new FilmHistory({ user_id, title, thumb, episode, total_episodes, server, progress, slug, embeb });
             await history.save();
             res.status(201).json({ status: 201, data: history, message: 'History added' });
         } catch (error) {
