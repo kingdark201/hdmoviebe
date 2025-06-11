@@ -38,7 +38,12 @@ class UserController {
             const updateData = {};
 
             if (Object.prototype.hasOwnProperty.call(req.body, 'username')) {
-                updateData.username = req.body.username;
+                const newUsername = req.body.username;
+                const existingUser = await User.findOne({ username: newUsername, _id: { $ne: userId } });
+                if (existingUser) {
+                    return res.status(400).json({ status: 400, message: 'Username already exists' });
+                }
+                updateData.username = newUsername;
             }
             if (Object.prototype.hasOwnProperty.call(req.body, 'avatar')) {
                 updateData.avatar = req.body.avatar;
