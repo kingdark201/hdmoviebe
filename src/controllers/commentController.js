@@ -53,6 +53,7 @@ class CommentController {
                     userId = c.user_id;
                 }
                 return {
+                    id: c._id, // Thêm dòng này
                     user_id: userId,
                     username,
                     avatar,
