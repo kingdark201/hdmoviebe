@@ -69,5 +69,25 @@ node-mongodb-project
 - **Get Comments By Slug**
   - Endpoint: `GET /api/comments/by-slug/:slug`
 
+### Film History API
+
+- **Add History**
+  - Endpoint: `POST /api/film-history/add`
+  - Headers: `Authorization: Bearer <token>`
+  - Body: `{ "title": "...", "thumb": "...", "episode": 1, "total_episodes": 12, "server": "...", "progress": 50 }`
+
+- **Edit History**
+  - Endpoint: `PUT /api/film-history/edit/:id`
+  - Headers: `Authorization: Bearer <token>`
+  - Body: `{ "episode": 2, "progress": 80 }`
+
+- **Delete History**
+  - Endpoint: `DELETE /api/film-history/delete/:id`
+  - Headers: `Authorization: Bearer <token>`
+
+- **Get History**
+  - Endpoint: `GET /api/film-history/get`
+  - Headers: `Authorization: Bearer <token>`
+
 ## License
 This project is licensed under the MIT License.

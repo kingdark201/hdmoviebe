@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const filmHistoryRoutes = require('./routes/filmHistoryRoutes');
 const cors = require('cors'); // Thêm dòng này
 
 const app = express();
@@ -19,6 +20,7 @@ connectDB();
 // Use the router directly
 app.use('/api/users', userRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/film-history', filmHistoryRoutes);
 
 // Start the server
 app.listen(PORT, () => {
