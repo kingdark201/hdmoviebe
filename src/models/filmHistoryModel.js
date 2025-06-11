@@ -7,7 +7,8 @@ const filmHistorySchema = new mongoose.Schema({
     episode: { type: Number, required: true },
     total_episodes: { type: Number, required: true },
     server: { type: String, required: true },
-    progress: { type: Number, required: true }
+    progress: { type: Number, required: true },
+    slug: { type: String, required: true },
 }, { timestamps: true });
 
 const FilmHistory = mongoose.model('FilmHistory', filmHistorySchema);
