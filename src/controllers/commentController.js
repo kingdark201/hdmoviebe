@@ -47,7 +47,7 @@ class CommentController {
                 let userId = null, username = null, avatar = null;
                 if (c.user_id && typeof c.user_id === 'object' && c.user_id._id) {
                     userId = c.user_id._id;
-                    username = c.user_id.userusername;
+                    username = c.user_id.username; // Sửa ở đây
                     avatar = c.user_id.avatar;
                 } else if (typeof c.user_id === 'string' || typeof c.user_id === 'object') {
                     userId = c.user_id;
