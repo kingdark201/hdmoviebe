@@ -4,8 +4,7 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-router.post('/add', auth, filmHistoryController.addHistory);
-router.put('/edit/:id', auth, filmHistoryController.editHistory);
+router.post('/upsert', auth, filmHistoryController.upsertHistory);
 router.delete('/delete/:id', auth, filmHistoryController.deleteHistory);
 router.get('/get', auth, filmHistoryController.getHistory);
 
