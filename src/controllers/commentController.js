@@ -7,12 +7,12 @@ class CommentController {
             if (!user_id) {
                 return res.status(401).json({ message: 'User not authenticated' });
             }
-            const { comment, slug_film, name_film } = req.body;
+            const { comment, slug_film } = req.body;
             if (!comment || !slug_film ) {
                 return res.status(400).json({ message: 'Missing required fields' });
             }
             // Đảm bảo user_id là ObjectId
-            const newComment = new Comment({ user_id, comment, slug_film, name_film });
+            const newComment = new Comment({ user_id, comment, slug_film });
             await newComment.save();
             res.status(201).json(newComment);
         } catch (error) {
