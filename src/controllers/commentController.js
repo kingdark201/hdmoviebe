@@ -24,12 +24,15 @@ class CommentController {
     async deleteComment(req, res) {
         try {
             const user_id = req.user.id;
+            const user_role = req.user.role;
             const commentId = req.params.id;
             const comment = await Comment.findById(commentId);
             if (!comment) return res.json({ status: 'error', message: 'Bình luận không tồn tại' });
-            if (comment.user_id.toString() !== user_id) {
+
+            if (user_role !== 'admin' && comment.user_id.toString() !== user_id) {
                 return res.json({ status: 'error', message: 'Bạn không có quyền xóa bình luận này' });
             }
+
             await Comment.findByIdAndDelete(commentId);
             res.json({ status: 'success', message: 'Đã xóa 1 bình luận' });
         } catch (error) {

@@ -83,8 +83,27 @@ class UserController {
     async deleteUser(req, res) {
         try {
             const userId = req.user.id;
-            const user = await User.findByIdAndDelete(userId);
-            if (!user) return res.json({ status: 'error', message: 'Không tìm thấy người dùng' });
+            const userRole = req.user.role;
+            let targetUserId = userId;
+
+            if (userRole === 'admin' && req.body && req.body.userId) {
+                targetUserId = req.body.userId;
+            }
+
+            const targetUser = await User.findById(targetUserId);
+            if (!targetUser) {
+                return res.json({ status: 'error', message: 'Không tìm thấy người dùng' });
+            }
+
+            if (userRole !== 'admin' && targetUserId !== userId) {
+                return res.json({ status: 'error', message: 'Bạn không có quyền xóa người dùng này' });
+            }
+
+            if (userRole === 'admin' && targetUser.role === 'admin') {
+                return res.json({ status: 'error', message: 'Không thể xóa tài khoản admin' });
+            }
+
+            await User.findByIdAndDelete(targetUserId);
             res.json({ status: 'success', message: 'Xóa thành công' });
         } catch (error) {
             res.json({ status: 400, message: error.message });
