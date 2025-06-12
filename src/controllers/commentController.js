@@ -1,4 +1,5 @@
 const Comment = require('../models/commentModel');
+const User = require('../models/userModel');
 
 class CommentController {
     async addComment(req, res) {
@@ -73,7 +74,7 @@ class CommentController {
 
     async getAllComment(req, res) {
         try {
-            const user = req.user;
+            const user = await User.findById(req.user.id);
             if (!user || user.role !== 'admin') {
                 return res.json({ status: 'error', message: 'Bạn không có quyền truy cập' });
             }
