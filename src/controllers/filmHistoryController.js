@@ -4,52 +4,56 @@ class FilmHistoryController {
     async upsertHistory(req, res) {
         try {
             const user_id = req.user && req.user.id ? req.user.id : null;
-            if (!user_id) return res.status(401).json({ status: 401, message: 'User not authenticated' });
+            if (!user_id) return res.json({ status: 'error', message: 'Người dùng chưa đăng nhập' });
             const { title, thumb, episode, total_episodes, server, progress, slug, embeb } = req.body;
-            if (!title || !thumb || episode == null || total_episodes == null || !server || progress == null || !slug || !embeb) {
-                return res.status(400).json({ status: 400, message: 'Missing required fields' });
+            if (!title || 
+                !thumb || 
+                episode == null || 
+                total_episodes == null || 
+                !server || 
+                progress == null || 
+                !slug || 
+                !embeb) {
+                return res.json({ status: 'error', message: 'Thiếu các trường bắt buộc' });
             }
-            // Kiểm tra tồn tại theo user_id + slug
             let history = await FilmHistory.findOne({ user_id, slug });
             if (history) {
-                // Chỉ update các trường episode và progress, trường khác giữ nguyên
                 history.episode = episode;
                 history.progress = progress;
-                history.embeb = embeb; // Cập nhật trường embeb nếu có
+                history.embeb = embeb;
                 await history.save();
-                return res.json({ status: 200, data: history, message: 'History updated' });
+                return res.json({ status: 'success', data: history, message: 'Đã cập nhật vào lịch sử xem' });
             }
-            // Nếu chưa có thì tạo mới
             history = new FilmHistory({ user_id, title, thumb, episode, total_episodes, server, progress, slug, embeb });
             await history.save();
-            res.status(201).json({ status: 201, data: history, message: 'History added' });
+            res.json({ status: 'success', data: history, message: 'Đã thêm vào lịch sử xem' });
         } catch (error) {
-            res.status(400).json({ status: 400, message: error.message });
+            res.json({ status: 400, message: error.message });
         }
     }
 
     async deleteHistory(req, res) {
         try {
             const user_id = req.user && req.user.id ? req.user.id : null;
-            if (!user_id) return res.status(401).json({ status: 401, message: 'User not authenticated' });
-            const { slug } = req.params; // hoặc req.body.slug nếu truyền qua body
-            if (!slug) return res.status(400).json({ status: 400, message: 'Missing slug parameter' });
+            if (!user_id) return res.json({ status: 'error', message: 'Người dùng chưa đăng nhập' });
+            const { slug } = req.params; 
+            if (!slug) return res.json({ status: 'error', message: 'Không tìm thấy phim cần xóa' });
             const history = await FilmHistory.findOneAndDelete({ user_id, slug });
-            if (!history) return res.status(404).json({ status: 404, message: 'History not found' });
-            res.json({ status: 200, message: 'History deleted' });
+            if (!history) return res.json({ status: 'error', message: 'Không tìm thấy phim cần xóa' });
+            res.json({ status: 'success', message: 'Đã xóa' });
         } catch (error) {
-            res.status(400).json({ status: 400, message: error.message });
+            res.json({ status: 400, message: error.message });
         }
     }
 
     async getHistory(req, res) {
         try {
             const user_id = req.user && req.user.id ? req.user.id : null;
-            if (!user_id) return res.status(401).json({ status: 401, message: 'User not authenticated' });
+            if (!user_id) return res.json({ status: 'error', message: 'Người dùng chưa đăng nhập' });
             const histories = await FilmHistory.find({ user_id }).sort({ updatedAt: -1 });
-            res.json({ status: 200, data: histories });
+            res.json({ status: 'success', data: histories });
         } catch (error) {
-            res.status(400).json({ status: 400, message: error.message });
+            res.json({ status: 400, message: error.message });
         }
     }
 }

@@ -5,18 +5,18 @@ class CommentController {
         try {
             const user_id = req.user && req.user.id ? req.user.id : null;
             if (!user_id) {
-                return res.status(401).json({ message: 'User not authenticated' });
+                return res.json({ status: 'error', message: 'Người dùng không xác thực' });
             }
             const { comment, slug_film } = req.body;
             if (!comment || !slug_film ) {
-                return res.status(400).json({ message: 'Missing required fields' });
+                return res.json({ status: 'error', message: 'Thiếu trường bắt buộc' });
             }
-            // Đảm bảo user_id là ObjectId
+
             const newComment = new Comment({ user_id, comment, slug_film });
             await newComment.save();
-            res.status(201).json(newComment);
+            res.json({status: 'success' ,data:newComment, message: 'Đã thêm 1 bình luận' });
         } catch (error) {
-            res.status(400).json({ status: 400, message: error.message });
+            res.json({ status: 400, message: error.message });
         }
     }
 
@@ -25,14 +25,14 @@ class CommentController {
             const user_id = req.user.id;
             const commentId = req.params.id;
             const comment = await Comment.findById(commentId);
-            if (!comment) return res.status(404).json({ status: 404, message: 'Comment not found' });
+            if (!comment) return res.json({ status: 'error', message: 'Bình luận không tồn tại' });
             if (comment.user_id.toString() !== user_id) {
-                return res.status(403).json({ status: 403, message: 'Not authorized to delete this comment' });
+                return res.json({ status: 'error', message: 'Bạn không có quyền xóa bình luận này' });
             }
             await Comment.findByIdAndDelete(commentId);
-            res.json({ message: 'Comment deleted' });
+            res.json({ status: 'success', message: 'Đã xóa 1 bình luận' });
         } catch (error) {
-            res.status(400).json({ status: 400, message: error.message });
+            res.json({ status: 400, message: error.message });
         }
     }
 
@@ -47,13 +47,13 @@ class CommentController {
                 let userId = null, username = null, avatar = null;
                 if (c.user_id && typeof c.user_id === 'object' && c.user_id._id) {
                     userId = c.user_id._id;
-                    username = c.user_id.username; // Sửa ở đây
+                    username = c.user_id.username; 
                     avatar = c.user_id.avatar;
                 } else if (typeof c.user_id === 'string' || typeof c.user_id === 'object') {
                     userId = c.user_id;
                 }
                 return {
-                    id: c._id, // Thêm dòng này
+                    id: c._id, 
                     user_id: userId,
                     username,
                     avatar,
@@ -65,9 +65,47 @@ class CommentController {
                         : null
                 };
             });
-            res.json(formatted);
+            res.json({ status: 'success', data: formatted });
         } catch (error) {
-            res.status(400).json({ status: 400, message: error.message });
+            res.json({ status: 400, message: error.message });
+        }
+    }
+
+    async getAllComment(req, res) {
+        try {
+            const user = req.user;
+            if (!user || user.role !== 'admin') {
+                return res.json({ status: 'error', message: 'Bạn không có quyền truy cập' });
+            }
+            const comments = await Comment.find()
+                .populate({ path: 'user_id', select: 'username avatar' })
+                .lean();
+
+            const formatted = comments.map(c => {
+                let userId = null, username = null, avatar = null;
+                if (c.user_id && typeof c.user_id === 'object' && c.user_id._id) {
+                    userId = c.user_id._id;
+                    username = c.user_id.username; 
+                    avatar = c.user_id.avatar;
+                } else if (typeof c.user_id === 'string' || typeof c.user_id === 'object') {
+                    userId = c.user_id;
+                }
+                return {
+                    id: c._id, 
+                    user_id: userId,
+                    username,
+                    avatar,
+                    comment: c.comment,
+                    slug_film: c.slug_film,
+                    createdAt: c.createdAt
+                        ? new Date(c.createdAt).toLocaleTimeString('vi-VN', { hour12: false }) + ' ' +
+                          new Date(c.createdAt).toLocaleDateString('vi-VN')
+                        : null
+                };
+            });
+            res.json({ status: 'success', data: formatted });
+        } catch (error) {
+            res.json({ status: 400, message: error.message });
         }
     }
 }
