@@ -101,8 +101,8 @@ class UserController {
     // Admin xóa user khác
     async adminDeleteUser(req, res) {
         try {
-            const userId = req.user.id;
-            const userRole = req.user.role;
+            const user = await User.findById(req.user.id);
+            const userRole = user.role;
             const targetUserId = req.body.userId;
 
             if (userRole !== 'admin') {
