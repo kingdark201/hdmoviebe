@@ -95,12 +95,19 @@ class UserController {
                 return res.json({ status: 'error', message: 'Không tìm thấy người dùng' });
             }
 
+            // Nếu là user thường, chỉ được xóa chính mình
             if (userRole !== 'admin' && targetUserId !== userId) {
                 return res.json({ status: 'error', message: 'Bạn không có quyền xóa người dùng này' });
             }
 
-            if (userRole === 'admin' && targetUser.role === 'admin') {
-                return res.json({ status: 'error', message: 'Không thể xóa tài khoản admin' });
+            // Nếu là admin, không được xóa chính mình hoặc user có role là admin
+            if (userRole === 'admin') {
+                if (targetUserId === userId) {
+                    return res.json({ status: 'error', message: 'Admin không thể tự xóa chính mình bằng quyền admin' });
+                }
+                if (targetUser.role === 'admin') {
+                    return res.json({ status: 'error', message: 'Không thể xóa tài khoản admin khác' });
+                }
             }
 
             await User.findByIdAndDelete(targetUserId);
