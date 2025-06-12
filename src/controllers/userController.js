@@ -111,7 +111,7 @@ class UserController {
             if (!targetUserId) {
                 return res.json({ status: 'error', message: 'Thiếu userId cần xóa' });
             }
-            if (targetUserId === userId) {
+            if (targetUserId === user._id.toString()) {
                 return res.json({ status: 'error', message: 'Admin không thể tự xóa chính mình bằng quyền admin' });
             }
             const targetUser = await User.findById(targetUserId);
