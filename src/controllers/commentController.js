@@ -24,7 +24,8 @@ class CommentController {
     async deleteComment(req, res) {
         try {
             const user_id = req.user.id;
-            const user_role = req.user.role;
+            const user = await User.findById(user_id);
+            const user_role = user.role;
             const commentId = req.params.id;
             const comment = await Comment.findById(commentId);
             if (!comment) return res.json({ status: 'error', message: 'Bình luận không tồn tại' });
