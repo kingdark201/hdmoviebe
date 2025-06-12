@@ -10,7 +10,8 @@ router.post('/add', userController.addUser);
 router.post('/login', userController.login);
 router.post('/logout', auth, userController.logout);
 router.put('/edit', auth, userController.editUser);
-router.delete('/delete', auth, userController.deleteUser);
+router.delete('/delete', auth, userController.deleteSelf);
+router.delete('/admin-delete', auth, userController.adminDeleteUser);
 router.get('/all', auth, userController.getAllUser);
 
 module.exports = router;

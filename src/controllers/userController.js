@@ -80,36 +80,47 @@ class UserController {
         }
     }
 
-    async deleteUser(req, res) {
+    // Xóa chính mình (user thường)
+    async deleteSelf(req, res) {
+        try {
+            const userId = req.user.id;
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.json({ status: 'error', message: 'Không tìm thấy người dùng' });
+            }
+            if (user.role === 'admin') {
+                return res.json({ status: 'error', message: 'Admin không thể tự xóa chính mình bằng quyền này' });
+            }
+            await User.findByIdAndDelete(userId);
+            res.json({ status: 'success', message: 'Xóa thành công' });
+        } catch (error) {
+            res.json({ status: 400, message: error.message });
+        }
+    }
+
+    // Admin xóa user khác
+    async adminDeleteUser(req, res) {
         try {
             const userId = req.user.id;
             const userRole = req.user.role;
-            let targetUserId = userId;
+            const targetUserId = req.body.userId;
 
-            if (userRole === 'admin' && req.body && req.body.userId) {
-                targetUserId = req.body.userId;
+            if (userRole !== 'admin') {
+                return res.json({ status: 'error', message: 'Bạn không có quyền truy cập' });
             }
-
+            if (!targetUserId) {
+                return res.json({ status: 'error', message: 'Thiếu userId cần xóa' });
+            }
+            if (targetUserId === userId) {
+                return res.json({ status: 'error', message: 'Admin không thể tự xóa chính mình bằng quyền admin' });
+            }
             const targetUser = await User.findById(targetUserId);
             if (!targetUser) {
                 return res.json({ status: 'error', message: 'Không tìm thấy người dùng' });
             }
-
-            // Nếu là user thường, chỉ được xóa chính mình
-            if (userRole !== 'admin' && targetUserId !== userId) {
-                return res.json({ status: 'error', message: 'Bạn không có quyền xóa người dùng này' });
+            if (targetUser.role === 'admin') {
+                return res.json({ status: 'error', message: 'Không thể xóa tài khoản admin khác' });
             }
-
-            // Nếu là admin, không được xóa chính mình hoặc user có role là admin
-            if (userRole === 'admin') {
-                if (targetUserId === userId) {
-                    return res.json({ status: 'error', message: 'Admin không thể tự xóa chính mình bằng quyền admin' });
-                }
-                if (targetUser.role === 'admin') {
-                    return res.json({ status: 'error', message: 'Không thể xóa tài khoản admin khác' });
-                }
-            }
-
             await User.findByIdAndDelete(targetUserId);
             res.json({ status: 'success', message: 'Xóa thành công' });
         } catch (error) {
