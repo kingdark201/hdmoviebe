@@ -60,7 +60,7 @@ class UserController {
             if (Object.prototype.hasOwnProperty.call(req.body, 'avatar')) {
                 updateData.avatar = req.body.avatar;
             }
-            if (Object.prototype.hasOwnProperty.call(req.body, 'password')) {
+            if (Object.prototype.hasOwnProperty.call(req.body, 'password') && req.body.password !== undefined && req.body.password !== null && req.body.password !== '') {
                 const password = req.body.password;
                 if (typeof password !== 'string' || password.length < 8) {
                     return res.json({ status: 'error', message: 'Mật khẩu phải có ít nhất 8 ký tự.' });
