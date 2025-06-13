@@ -5,21 +5,15 @@ class FilmFavoriteController {
         try {
             const user_id = req.user && req.user.id ? req.user.id : null;
             if (!user_id) return res.json({ status: 'error', message: 'Người dùng chưa đăng nhập' });
-            const { title, thumb, episode, total_episodes, server, slug, embeb } = req.body;
-            if (!title || 
-                !thumb || 
-                episode == null || 
-                total_episodes == null || 
-                !server || 
-                !slug || 
-                !embeb) {
+            const { title, thumb, total_episodes,slug} = req.body;
+            if (!title || !thumb || total_episodes == null || !slug) {
                 return res.json({ status: 'error', message: 'Thiếu các trường bắt buộc' });
             }
             const existed = await FilmFavorite.findOne({ user_id, slug });
             if (existed) {
                 return res.json({ status: 'error', message: 'Phim đã có trong danh sách yêu thích' });
             }
-            const favorite = new FilmFavorite({ user_id, title, thumb, episode, total_episodes, server, slug, embeb });
+            const favorite = new FilmFavorite({ user_id, title, thumb, total_episodes, slug});
             await favorite.save();
             res.json({ status: 'success', data: favorite, message: 'Đã thêm vào danh sách yêu thích' });
         } catch (error) {
