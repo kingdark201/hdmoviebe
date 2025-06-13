@@ -5,7 +5,7 @@ const filmFavoriteSchema = new mongoose.Schema({
     title: { type: String, required: true },
     origin_title: { type: String, required: true },
     thumb: { type: String, required: true },
-    current_episode: { type: Number, required: true },
+    current_episode: { type: String, required: true },
     total_episodes: { type: Number, required: true },
     slug: { type: String, required: true },
 }, { timestamps: true });

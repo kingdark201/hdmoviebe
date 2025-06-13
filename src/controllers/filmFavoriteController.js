@@ -6,7 +6,7 @@ class FilmFavoriteController {
             const user_id = req.user && req.user.id ? req.user.id : null;
             if (!user_id) return res.json({ status: 'error', message: 'Người dùng chưa đăng nhập' });
             const { title, origin_title, thumb, current_episode , total_episodes, slug} = req.body;
-            if (!title || !origin_title || !thumb || current_episode == null || total_episodes == null || !slug) {
+            if (!title || !origin_title || !thumb || !current_episode || total_episodes == null || !slug) {
                 return res.json({ status: 'error', message: 'Thiếu các trường bắt buộc' });
             }
             const existed = await FilmFavorite.findOne({ user_id, slug });
