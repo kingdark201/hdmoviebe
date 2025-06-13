@@ -19,9 +19,10 @@ class UserController {
     async addUser(req, res) {
         try {
             const { username, password, avatar } = req.body;
-            const usernameRegex = /^[A-Za-zÀ-ỹ\u4e00-\u9fa5]{1,20}$/u;
+            // Cho phép username chứa dấu cách
+            const usernameRegex = /^[A-Za-zÀ-ỹ\u4e00-\u9fa5\s]{1,20}$/u;
             if (!usernameRegex.test(username)) {
-                return res.json({ status: 'error', message: 'Tên người dùng không hợp lệ. Chỉ cho phép chữ cái và tối đa 20 ký tự.' });
+                return res.json({ status: 'error', message: 'Tên người dùng không hợp lệ. Chỉ cho phép chữ cái, dấu cách và tối đa 20 ký tự.' });
             }
             if (typeof password !== 'string' || password.length < 8) {
                 return res.json({ status: 'error', message: 'Mật khẩu phải có ít nhất 8 ký tự.' });
@@ -47,9 +48,10 @@ class UserController {
 
             if (Object.prototype.hasOwnProperty.call(req.body, 'username')) {
                 const newUsername = req.body.username;
-                const usernameRegex = /^[A-Za-zÀ-ỹ\u4e00-\u9fa5]{1,20}$/u;
+                // Cho phép username chứa dấu cách
+                const usernameRegex = /^[A-Za-zÀ-ỹ\u4e00-\u9fa5\s]{1,20}$/u;
                 if (!usernameRegex.test(newUsername)) {
-                    return res.json({ status: 'error', message: 'Tên người dùng không hợp lệ. Chỉ cho phép chữ cái và tối đa 20 ký tự.' });
+                    return res.json({ status: 'error', message: 'Tên người dùng không hợp lệ. Chỉ cho phép chữ cái, dấu cách và tối đa 20 ký tự.' });
                 }
                 const existingUser = await User.findOne({ username: newUsername, _id: { $ne: userId } });
                 if (existingUser) {
