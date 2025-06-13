@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const filmFavoriteSchema = new mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     title: { type: String, required: true },
+    origin_title: { type: String, required: true },
     thumb: { type: String, required: true },
+    current_episode: { type: Number, required: true },
     total_episodes: { type: Number, required: true },
     slug: { type: String, required: true },
 }, { timestamps: true });
