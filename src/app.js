@@ -6,6 +6,7 @@ const userRoutes = require('./routes/userRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const filmHistoryRoutes = require('./routes/filmHistoryRoutes');
 const filmFavoriteRoutes = require('./routes/filmFavoriteRoutes');
+const pictureRoutes = require('./routes/pictureRoutes'); // Thêm dòng này
 const cors = require('cors'); // Thêm dòng này
 
 const app = express();
@@ -23,6 +24,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/film-history', filmHistoryRoutes);
 app.use('/api/film-favorite', filmFavoriteRoutes);
+app.use('/api/pictures', pictureRoutes); // Thêm dòng này
 
 // Start the server
 app.listen(PORT, () => {
