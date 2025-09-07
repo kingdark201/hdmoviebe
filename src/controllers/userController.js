@@ -134,10 +134,10 @@ class UserController {
         try {
             const { username, password } = req.body;
             const user = await User.findOne({ username });
-            if (!user) return res.json({ status: 'error', message: 'Tên người dùng hoặc mật khẩu không đúng' });
+            if (!user) return res.json({ status: 'error', message: 'Tên người dùng không đúng' });
             const isMatch = await bcrypt.compare(password, user.password);
-            if (!isMatch) return res.json({ status: 'error', message: 'Tên người dùng hoặc mật khẩu không đúng' });
-            const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET || 'secretkey', { expiresIn: '1d' });
+            if (!isMatch) return res.json({ status: 'error', message: 'Mật khẩu không đúng' });
+            const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET || 'secretkey', { expiresIn: '7d' });
             res.json({
                 token,
                 user: {
